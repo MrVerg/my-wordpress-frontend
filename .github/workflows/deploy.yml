@@ -1,4 +1,4 @@
-name: Deploy to Production
+name: Deploy to Vercel
 
 on:
   # Permite activar este flujo manualmente desde la pestaña Actions
@@ -8,39 +8,11 @@ on:
     types: [webhook]
 
 jobs:
-  web-deploy:
-    name: 🎉 Deploy
+  trigger-vercel-deploy:
+    name: 🚀 Trigger Vercel Rebuild
     runs-on: ubuntu-latest
     steps:
-      - name: 🚚 Get latest code
-        uses: actions/checkout@v4
-
-      - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: 📦 Install dependencies
-        run: npm ci
-
-      - name: 🏗️ Build Project
-        env:
-          # Si necesitas variables de entorno para el build (e.g. URL de WP), agrégalas aquí
-          # PUBLIC_WP_URL: ${{ secrets.PUBLIC_WP_URL }} 
-          CI: true
-        run: npm run build
-
-      - name: 📂 Sync files (FTP)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          # Carpeta local a subir (el resultado del build de Astro)
-          local-dir: ./dist/
-          # Carpeta remota donde se alojará el sitio
-          server-dir: /htdocs/impresos-lebu/
-          # Borrar archivos en el servidor que no estén en el build (cuidado con esto)
-          # Lo dejamos en false por seguridad inicial, o true si queremos limpieza total (recomendado para SSG)
-          dangerous-clean-slate: true 
+      - name: 📣 Trigger Vercel Deploy Hook
+        run: |
+          curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
+          echo "✅ Vercel deployment triggered successfully!" 
