@@ -9,7 +9,8 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
 // 1. Configuración de la API
 // Usamos Pantheon como default para producción si no hay variable de entorno
 const WP_DOMAIN = import.meta.env.PUBLIC_WP_URL || 'https://dev-impresos-lebu.pantheonsite.io';
-const API_URL = `${WP_DOMAIN}/wp-json/wp/v2/pages?slug=inicio`;
+// Agregamos timestamp para evitar cache
+const API_URL = `${WP_DOMAIN}/wp-json/wp/v2/pages?slug=inicio&_=${Date.now()}`;
 
 // 2. Variables para datos
 let pageData = null;
