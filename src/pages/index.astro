@@ -1,0 +1,103 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Description from '../components/Description.astro';
+import Testimonials from '../components/Testimonials.astro';
+import ContactForm from '../components/ContactForm.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+
+// 1. Configuración de la API
+// Usamos Pantheon como default para producción si no hay variable de entorno
+const WP_DOMAIN = import.meta.env.PUBLIC_WP_URL || 'https://dev-impresos-lebu.pantheonsite.io';
+const API_URL = `${WP_DOMAIN}/wp-json/wp/v2/pages?slug=inicio`;
+
+// 2. Variables para datos
+let pageData = null;
+let acfData = null;
+let debugInfo = {
+  url: API_URL,
+  status: 'Init',
+  error: null,
+  data: null
+};
+
+// 3. Fetch de datos
+try {
+  console.log(`Fetching from: ${API_URL}`);
+  const res = await fetch(API_URL);
+  
+  debugInfo.status = res.status;
+  debugInfo.statusText = res.statusText;
+  
+  if (!res.ok) {
+    throw new Error(`HTTP Error: ${res.status}`);
+  }
+  
+  const pages = await res.json();
+  debugInfo.data = pages;
+  
+  if (pages && pages.length > 0) {
+    pageData = pages[0];
+    acfData = pageData.acf || pageData.meta || {};
+  } else {
+    debugInfo.error = "No pages found with slug 'inicio'";
+  }
+} catch (error) {
+  console.error('Fetch error:', error);
+  debugInfo.error = error.message;
+}
+
+// 4. Fallback values
+const heroTitle = acfData?.hero_title || pageData?.title?.rendered || 'Bienvenido a Impresos Lebu';
+const heroSubtitle = acfData?.hero_subtitle || 'Calidad y rapidez en tus impresiones.';
+const heroImage = acfData?.hero_image || null;
+const heroCta = { 
+  label: acfData?.hero_cta || 'Contáctanos', 
+  url: acfData?.hero_cta_url || '#contacto' 
+};
+
+const descriptionTitle = acfData?.description_title || '';
+const description = acfData?.description_content || '<p>Bienvenido a nuestro sitio web.</p>';
+const testimonials = acfData?.testimonials || [];
+
+const configWhatsApp = {
+  number: acfData?.whatsapp_number || '',
+  message: acfData?.whatsapp_message || 'Hola! Quisiera más información sobre sus servicios.',
+  buttonText: acfData?.whatsapp_button_text || '¿Dudas? Escríbenos'
+};
+---
+
+<Layout>
+  <main>
+    {pageData ? (
+      <>
+        <Hero 
+          title={heroTitle}
+          subtitle={heroSubtitle}
+          image={heroImage}
+          cta={heroCta}
+        />
+        <Description title={descriptionTitle} content={description} />
+        <Testimonials testimonials={testimonials} />
+        <ContactForm />
+        <WhatsAppButton config={configWhatsApp} />
+      </>
+    ) : (
+      <div class="debug-container">
+        <h1>⚠️ Error de Carga</h1>
+        <p>No se pudo conectar con WordPress.</p>
+        <div class="debug-info">
+          <p><strong>URL:</strong> {debugInfo.url}</p>
+          <p><strong>Error:</strong> {debugInfo.error}</p>
+          <p><strong>Status:</strong> {debugInfo.status}</p>
+        </div>
+      </div>
+    )}
+  </main>
+</Layout>
+
+<style>
+  main { font-family: 'Inter', sans-serif; }
+  .debug-container { padding: 4rem; text-align: center; }
+  .debug-info { background: #f0f0f0; padding: 1rem; margin-top: 1rem; display: inline-block; text-align: left; }
+</style>

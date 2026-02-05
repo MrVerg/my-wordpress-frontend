@@ -1,0 +1,32 @@
+---
+const { title, content } = Astro.props;
+---
+
+<section class="py-24 bg-brand-lime/10">
+  <div class="container-custom">
+    <div class="bg-brand-lime p-12 md:p-20 rounded-[4rem] shadow-2xl relative overflow-hidden">
+      <!-- Decorative Scribble -->
+      <svg class="absolute -top-10 -right-10 text-brand-purple/20 w-64 h-64" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 150 Q 100 50 150 150" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>
+      </svg>
+
+      <div class="max-w-4xl mx-auto relative z-10">
+        {title && (
+          <div class="mb-12">
+            <h2 class="text-4xl md:text-6xl font-black uppercase text-brand-dark leading-tight">{title}</h2>
+          </div>
+        )}
+        
+        <div class="max-w-none text-brand-dark/80 text-xl md:text-2xl font-bold leading-relaxed
+                    [&_h2]:text-4xl [&_h2]:font-black [&_h2]:uppercase [&_h2]:text-brand-purple [&_h2]:mt-16 [&_h2]:mb-8
+                    [&_h3]:text-3xl [&_h3]:font-black [&_h3]:uppercase [&_h3]:mt-10 [&_h3]:mb-6
+                    [&_p]:mb-8
+                    [&_ul]:grid [&_ul]:grid-cols-1 [&_ul]:md:grid-cols-2 [&_ul]:gap-4 [&_ul]:mb-10
+                    [&_li]:bg-white/50 [&_li]:p-4 [&_li]:rounded-2xl [&_li]:list-none [&_li]:before:content-['⚡'] [&_li]:before:mr-2
+                    [&_blockquote]:italic [&_blockquote]:text-3xl [&_blockquote]:font-black [&_blockquote]:text-brand-purple [&_blockquote]:border-l-[12px] [&_blockquote]:border-brand-purple [&_blockquote]:bg-white [&_blockquote]:p-10 [&_blockquote]:rounded-r-3xl [&_blockquote]:my-12 [&_blockquote]:shadow-xl"
+             set:html={content} 
+        />
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,57 @@
+---
+import { Image } from 'astro:assets';
+
+const { title, subtitle, image, cta } = Astro.props;
+
+const defaultImage = "https://images.unsplash.com/photo-1562577309-4932fdd64cd1?auto=format&fit=crop&w=1000&q=80";
+const imageUrl = image?.sizes?.large || image?.url || defaultImage;
+const imageAlt = image?.alt || title || 'Hero Image';
+---
+
+<section class="relative pt-12 pb-24 md:pt-20 md:pb-32 bg-brand-purple text-white overflow-hidden rounded-b-[4rem] sm:rounded-b-[6rem]">
+  <!-- Decorative Background Elements -->
+  <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+    <svg class="absolute top-10 left-10 text-white w-48 h-48" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 100 Q 50 20 100 100 T 180 100" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+    </svg>
+    <svg class="absolute bottom-20 right-10 text-brand-lime w-64 h-64" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100" cy="100" r="40" stroke="currentColor" stroke-width="4" stroke-dasharray="10 10"/>
+      <path d="M100 20 L 100 50 M 180 100 L 150 100 M 100 180 L 100 150 M 20 100 L 50 100" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <div class="container-custom relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center text-center lg:text-left">
+    <div class="space-y-8 animate-in fade-in slide-in-from-left duration-700">
+      <h1 class="text-6xl md:text-8xl font-black uppercase text-white leading-[0.9] drop-shadow-2xl">
+        {title}
+      </h1>
+      <p class="text-xl md:text-2xl font-medium text-white/90 max-w-xl mx-auto lg:mx-0">
+        {subtitle}
+      </p>
+      
+      <div class="flex flex-wrap justify-center lg:justify-start gap-6">
+        {cta && cta.url && (
+          <a href={cta.url} class="btn-pill bg-brand-lime text-brand-dark hover:bg-white">
+            {cta.label || '¡Súmate ahora!'}
+          </a>
+        )}
+      </div>
+    </div>
+    
+    <div class="relative group animate-in zoom-in duration-1000">
+      <div class="absolute -inset-4 bg-brand-coral/30 rounded-[3rem] blur-2xl group-hover:bg-brand-coral/50 transition-all"></div>
+      <div class="relative rounded-[3rem] overflow-hidden border-8 border-white shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500">
+        <Image 
+          src={imageUrl} 
+          alt={imageAlt} 
+          width={800} 
+          height={800} 
+          class="w-full h-auto object-cover aspect-square sm:aspect-auto"
+          inferSize={true}
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+
